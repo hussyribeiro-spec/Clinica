@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UsuarioServiceImpl implements UsuarioService {
 
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @Autowired
     private UsuarioDao usuarioDao;
-
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Override
     public Usuario salvar(UsuarioCadastroDTO dto) {
