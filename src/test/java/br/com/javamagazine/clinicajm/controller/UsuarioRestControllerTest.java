@@ -70,6 +70,44 @@ class UsuarioRestControllerTest {
     }
 
     @Test
+    void cadastrar_senhaCurta_deveRetornar400() throws Exception {
+        mockMvc.perform(post("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "nome": "João Silva",
+                                  "email": "joao@email.com",
+                                  "senha": "abc"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.senha").exists());
+    }
+
+    @Test
+    void cadastrar_nomeMuitoCurto_deveRetornar400() throws Exception {
+        mockMvc.perform(post("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "nome": "A",
+                                  "email": "joao@email.com",
+                                  "senha": "senha123"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.nome").exists());
+    }
+
+    @Test
+    void cadastrar_bodyVazio_deveRetornar400() throws Exception {
+        mockMvc.perform(post("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void cadastrar_emailDuplicado_deveRetornar409() throws Exception {
         String body = """
                 {

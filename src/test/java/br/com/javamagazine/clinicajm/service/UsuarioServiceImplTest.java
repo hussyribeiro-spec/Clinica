@@ -70,4 +70,26 @@ class UsuarioServiceImplTest {
         assertThat(resultado.getEmail()).isEqualTo("joao@email.com");
         assertThat(resultado.getSenha()).isNotEqualTo("senha123");
     }
+
+    @Test
+    void salvar_naoDeveInvocarDaoQuandoEmailDuplicado() {
+        Usuario existente = new Usuario();
+        existente.setEmail(dto.getEmail());
+        when(usuarioDao.buscarPorEmail(dto.getEmail())).thenReturn(Optional.of(existente));
+
+        assertThatThrownBy(() -> usuarioService.salvar(dto))
+                .isInstanceOf(EmailJaCadastradoException.class);
+
+        verify(usuarioDao, never()).salvar(any(Usuario.class));
+    }
+
+    @Test
+    void salvar_deveSalvarSenhaQueNaoMatchComTextoOriginal() {
+        when(usuarioDao.buscarPorEmail(dto.getEmail())).thenReturn(Optional.empty());
+
+        Usuario resultado = usuarioService.salvar(dto);
+
+        assertThat(resultado.getSenha()).isNotEqualTo("senha123");
+        assertThat(resultado.getSenha()).isNotBlank();
+    }
 }
