@@ -56,7 +56,7 @@ class UsuarioServiceImplTest {
 
         assertThatThrownBy(() -> usuarioService.salvar(dto))
                 .isInstanceOf(EmailJaCadastradoException.class)
-                .hasMessageContaining("joao@email.com");
+                .hasMessage("E-mail já cadastrado.");
     }
 
     @Test

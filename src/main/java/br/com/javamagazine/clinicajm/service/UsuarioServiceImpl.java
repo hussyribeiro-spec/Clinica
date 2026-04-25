@@ -21,7 +21,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario salvar(UsuarioCadastroDTO dto) {
         usuarioDao.buscarPorEmail(dto.getEmail()).ifPresent(u -> {
-            throw new EmailJaCadastradoException(dto.getEmail());
+            throw new EmailJaCadastradoException();
         });
 
         Usuario usuario = new Usuario();

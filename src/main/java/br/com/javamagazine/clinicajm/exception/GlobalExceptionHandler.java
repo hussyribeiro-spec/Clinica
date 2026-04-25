@@ -1,5 +1,6 @@
 package br.com.javamagazine.clinicajm.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,6 +18,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleEmailDuplicado(EmailJaCadastradoException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("erro", ex.getMessage()));
+    }
+
+    // Garante 409 mesmo em race condition (dois cadastros simultâneos com o mesmo e-mail)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraintViolation(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("erro", "E-mail já cadastrado."));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
